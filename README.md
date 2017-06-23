@@ -1,161 +1,156 @@
-Linux-Server
+# Linux-Server
+- Project 5- FSND
 
-Project 7 under the Full Stack Web Developer Nanodegree at Udacity
-See project live at: link Notes for reviewer:
+### Project link: [link](http://ec2-13-126-131-204.ap-south-1.compute.amazonaws.com/)
+### In this project we had to deploy item catalog project on linux server.
+### Project Details:
+* public Ip: `13.126.131.204`
+* SSH PORT: `2200`
+* Full project URL:[link](http://ec2-13-126-131-204.ap-south-1.compute.amazonaws.com/)
 
-public Ip: 34.201.114.178
-SSH PORT: 2200
-Full project URL:link
-Tasks given and method for completion:
 
-Start a new Ubuntu Linux server instance on Amazon Lightsail.
 
-Launch Amazon Lightsail terminal
+### Commands:
 
-Must be logged into your Amazon Web Services account.
-Visit this link and press Create new instance of Ubuntu.
-You will get your respective public IP address.
-Download the default key-pair and copy to /.ssh folder.
-Open your terminal and type in chmod 600 ~/.ssh/key.pem
-Now Use the command ssh -i ~/.ssh/key.pem ubuntu@34.201.114.178 to create the instance on your terminal
-Create a new user named grader
+* Initialization :
+    * create an account on amazon lightsail.
+    * log in to your account.
+    * create an ubuntu instance on amazon light sail. URL: [link](https://lightsail.aws.amazon.com/ls/webapp/home)
+    * click on the instance and download default ssh key.
+    * open terminal by clicking on `Connect using SSH` button
+    
+* Amazon Lightsail terminal :
+    * Copy your public IP address written on bottom left of terminal.
+    * Copy default key to /.ssh folder whith help of nano text editor by typing `ctrl+o`, enter and `ctrl+x`, let's say we named it 'key'.
+    * give command `chmod 600 ~/.ssh/key`
+    * Type `ssh -i ~/.ssh/key ubuntu@*YOUR_PUBLIC_IP_ADDRESS_HERE*` to create and authenticate the instance.
 
-sudo adduser grader
-optional: install finger to check user has been added apt-get install finger
-finger grader
-Give the grader the permission to sudo
+* Creating user - 'grader' :
+    * `sudo adduser grader`
+    * `apt-get install finger`
+    * `finger grader`
 
-sudo visudo
-inside the file add grader ALL=(ALL:ALL) ALL below the root user under "#User privilege specification"
-save file(nano: ctrl+x, Y, Enter)
-Add grader to /etc/sudoers.d/ and type in grader ALL=(ALL:ALL) ALLby command sudo nano /etc/sudoers.d/grader
-Add root to /etc/sudoers.d/ and type in root ALL=(ALL:ALL) ALLby command sudo nano /etc/sudoers.d/root
-Update all currently installed packages
 
-Find updates:sudo apt-get update
-Install updates:sudo sudo apt-get upgrade Hit Y for yes and give yourself a break while it installs.
-Change the SSH port from 22 to 2200 and other SSH configuration required from grading rubic
+* Give the grader the permission to sudo :
+    * type `sudo visudo`
+    * In opened file below '#User privilege specification' add `grader   ALL=(ALL:ALL) ALL` below the root user and save the file.
+    * Add grader to `/etc/sudoers.d/`.Type command `sudo nano /etc/sudoers.d/grader` and add `grader   ALL=(ALL:ALL) ALL` to file.
+    * Add root to `/etc/sudoers.d/`.Type command `sudo nano /etc/sudoers.d/root`and add `root   ALL=(ALL:ALL) ALL` to file.
 
-nano /etc/ssh/sshd_config add port 2200 below port 22
-while in the file also change PermitRootLogin prohibit-password to PermitRootLogin no to disallow root login
-Change PasswordAuthentication from no to yes. We will change back after finishing SHH login setup
-save file(nano: ctrl+x, Y, Enter)
-restart ssh servicesudo service ssh reload
-Create SSH keys and copy to server manually:
 
-On your local machine generate SSH key pair with: ssh-keygen
+* Updating all packages :
+    * `sudo apt-get update`
+    * `sudo sudo apt-get upgrade` Press Y for yes.
 
-save youkeygen file in your ssh directory /home/ubuntu/.ssh/ example full file path that could be used: /home/ubuntu/.ssh/item-catalog
+* Change the SSH port from 22 to 2200 and configuring SSH :
+    *  Type in `nano /etc/ssh/sshd_config` add `Port 2200` below `Port 22` in file.
+    * Change `PermitRootLogin prohibit-password` to `PermitRootLogin no` to revoke root login
+    * Change `PasswordAuthentication` from `no` to `yes`.
+    * save file by pressing `ctrl+o`, enter, `ctrl+x`.
+    * restart ssh service`sudo service ssh reload` and `sudo service ssh restart`.
 
-You can add a password to use encase your keygen file gets compromised(you will be prompted to enter this password when you connect with key pair)
 
-Change the SSH port number configuration in Amazon lightsail in networking tab to 2200.
+* Generating SSH key :
+    * Type `ssh-keygen` and give path to save example: `/home/ubuntu/.ssh/item-catalog`.
+    * Enter pass Phrase or leave it blank.
+    * open machine's networking tab on lightsail and add custom TCP application with 2200 port.
+    
+* Saving SSH key to grader account :
+    * Type `ssh -v grader@*Public-IP-Address* -p 2200` to log in with grader.
+    * Type `mkdir .ssh` to make a directory named .ssh
+    * Create file by giving command `touch .ssh/authorized_keys` to store generated key.
+    * Read contents of key by command `cat /home/ubuntu/.ssh/item-catalog` or your path and copy the key.
+    * Paste the key in the file you just created in grader `nano .ssh/authorized_keys` and save file.
+    * Type in `chmod 700 .ssh`, `chmod 644 .ssh/authorized_keys` to give permissions.
+    * type `nano /etc/ssh/sshd_config` and change `PasswordAuthentication` from `yes` to `no`. Save file.  
+    * login with key pair: `ssh grader@Public-IP-Address* -p 2200 -i /home/ubuntu/.ssh/item-catalog`
 
-login into grader account using password set during user creation ssh -v grader@*Public-IP-Address* -p 2200
 
-Make .ssh directorymkdir .ssh
+* Configuring the UFW :
+    * Check UFW statu : `sudo ufw status`
+    * `sudo ufw default deny incoming`
+    * `sudo ufw default allow outgoing`
+    * `sudo ufw allow ssh`
+    * `sudo ufw allow 2200/tcp`
+    * `sudo ufw allow 80/tcp`
+    * `sudo ufw allow 123/udp`
+    * `sudo ufw enable`
 
-make file to store keytouch .ssh/authorized_keys
 
-On your local machine read contents of the public key cat .ssh/project5.pub
+* Configuring local timezone :
+    * `sudo dpkg-reconfigure tzdata`. Select time zone.
 
-Copy the key and paste in the file you just created in grader nano .ssh/authorized_keys paste contents(ctr+v)
 
-save file(nano: ctrl+x, Y, Enter)
+* Installing and configuring Apache :
+    * `sudo apt-get install apache2`.
+    * open your public IP address in browser and check.
+    * `sudo apt-get install libapache2-mod-wsgi` installing mod_wsgi.
+    * `sudo nano /etc/apache2/sites-enabled/000-default.conf`.
+    * In file add `WSGIScriptAlias / /var/www/html/myapp.wsgi` before `</VirtualHost>` and save file.
+    * Restart Apache `sudo service apache2 restart`
 
-Set permissions for files: chmod 700 .ssh chmod 644 .ssh/authorized_keys
 
-Change PasswordAuthentication from yes back to no. nano /etc/ssh/sshd_config
+* installing git and python :
+    * `sudo apt-get install git`.
+    * `sudo apt-get install python-dev`.
+    * Verify wsgi is enabled `sudo a2enmod wsgi`
+    
+* Create a small flask app.
+    * `cd /var/www` to enter www directory.
+    * `sudo mkdir catalog` make directory catalog.
+    * `cd catalog` to enter catalog.
+    * `sudo mkdir catalog` make another directory catalog.
+    * `cd catalog` to enter catalog.
+    * `sudo mkdir static templates` to make directories static and templates to store static and templates of project.
+    * `sudo nano __init__.py ` to create init file and add following code.
 
-save file(nano: ctrl+x, Y, Enter)
+    ```
+     from flask import Flask
+    app = Flask(__name__)
+    @app.route("/")
+    def hello():
+        return "Hello, world (Testing!)"
+    if __name__ == "__main__":
+    app.run()
+    ```
 
-login with key pair: ssh grader@Public-IP-Address* -p 2200 -i ~/.ssh/project5
+* installing flask :
+    * Type `sudo apt-get install python-pip` to install python-pip
+    * Type `sudo -H pip install virtualenv ` to install virtualenv
+    * Command `sudo virtualenv venv` to create obj of virtualenv
+    * Command `sudo chmod -R 777 venv` to give permission.
+    * Type `source venv/bin/activate`
+    * Type `sudo -H pip install Flask` install Flask.
+    * Type `sudo -H pip install flask` install flask.
+    * Type `python __init__.py` run init file.
+    * Type `deactivate`
 
-alternatively you can use a shorter method found here
+* Configure And Enable New Virtual Host :
+    * create file `sudo nano /etc/apache2/sites-available/catalog.conf` and paste following code:
 
-Configure the Uncomplicated Firewall (UFW) to only allow incoming connections for SSH (port 2200), HTTP (port 80), and NTP (port 123)
-
-Check UFW status to make sure its inactivesudo ufw status
-Deny all incoming by defaultsudo ufw default deny incoming
-Allow outgoing by defaultsudo ufw default allow outgoing
-Allow SSH sudo ufw allow ssh
-Allow SSH on port 2200sudo ufw allow 2200/tcp
-Allow HTTP on port 80sudo ufw allow 80/tcp
-Allow NTP on port 123sudo ufw allow 123/udp
-Turn on firewallsudo ufw enable
-Configure the local timezone to UTC
-
-run sudo dpkg-reconfigure tzdata from prompt: select none of the above. Then select UTC.
-Install and configure Apache to serve a Python mod_wsgi application
-
-sudo apt-get install apache2 Check if "It works!" at you public IP address given during setup.
-install mod_wsgi: sudo apt-get install libapache2-mod-wsgi
-configure Apache to handle requests using the WSGI module sudo nano /etc/apache2/sites-enabled/000-default.conf
-add WSGIScriptAlias / /var/www/html/myapp.wsgi before </VirtualHost> closing line
-save file(nano: ctrl+x, Y, Enter)
-Restart Apache sudo apache2ctl restart
-Install git, clone and setup your Catalog App project (from your GitHub repository from earlier in the Nanodegree program) so that it functions correctly when visiting your server’s IP address in a browser. Remember to set this up appropriately so that your .git directory is not publicly accessible via a browser!
-
-install git
-
-sudo apt-get install git
-install python dev and verify WSGI is enabled
-
-Install python-dev packagesudo apt-get install python-dev
-Verify wsgi is enabled sudo a2enmod wsgi
-Create flask app taken from digitalocean
-
-cd /var/www
-sudo mkdir catalog
-cd catalog
-sudo mkdir catalog
-cd catalog
-sudo mkdir static templates
-sudo nano __init__.py
- from flask import Flask
-app = Flask(__name__)
-@app.route("/")
-def hello():
-    return "Hello, world (Testing!)"
-if __name__ == "__main__":
-app.run()
-install flask
-
-sudo apt-get install python-pip
-sudo pip install virtualenv
-sudo virtualenv venv
-sudo chmod -R 777 venv
-source venv/bin/activate
-pip install Flask
-python __init__.py
-deactivate
-Configure And Enable New Virtual Host
-
-Create host config file sudo nano /etc/apache2/sites-available/catalog.conf
-paste the following:
-<VirtualHost *:80>
-  ServerName 34.201.114.178
-  ServerAdmin admin@34.201.114.178
-  WSGIScriptAlias / /var/www/catalog/catalog.wsgi
-  <Directory /var/www/catalog/catalog/>
-      Order allow,deny
-      Allow from all
-  </Directory>
-  Alias /static /var/www/catalog/catalog/static
-  <Directory /var/www/catalog/catalog/static/>
-      Order allow,deny
-      Allow from all
-  </Directory>
-  ErrorLog ${APACHE_LOG_DIR}/error.log
-  LogLevel warn
-  CustomLog ${APACHE_LOG_DIR}/access.log combined
-</VirtualHost>
-    * save file(nano: `ctrl+x`, `Y`, Enter)
-    * Enable `sudo a2ensite catalog`
-
-* Create the wsgi file
+    ```
+    <VirtualHost *:80>
+      ServerName 34.201.114.178
+      ServerAdmin admin@34.201.114.178
+      WSGIScriptAlias / /var/www/catalog/catalog.wsgi
+      <Directory /var/www/catalog/catalog/>
+          Order allow,deny
+          Allow from all
+      </Directory>
+      Alias /static /var/www/catalog/catalog/static
+      <Directory /var/www/catalog/catalog/static/>
+          Order allow,deny
+          Allow from all
+      </Directory>
+      ErrorLog ${APACHE_LOG_DIR}/error.log
+      LogLevel warn
+      CustomLog ${APACHE_LOG_DIR}/access.log combined
+  </VirtualHost>
+```
+    * save file.
+    * `sudo a2ensite catalog`
     * `cd /var/www/catalog`
-    * `sudo nano catalog.wsgi`
+    * `sudo nano catalog.wsgi` and paste following code:
 
     ```
   #!/usr/bin/python
@@ -166,58 +161,58 @@ paste the following:
 
   from catalog import app as application
   application.secret_key = 'Add your secret key'
-save file(nano: ctrl+x, Y, Enter)
+  ```
 
-sudo service apache2 restart
+  * save file.
+  * `sudo service apache2 restart` restarts apache and loads changes.
 
-Clone Github Repo
+* Clone Github Repo containing project :
+    * `sudo git clone https://github.com/vaishnavimehta/item-catalog`
+    * `shopt -s dotglob`. Move files from clone directory to catalog directory `mv /var/www/catalog/item-catalog/*
+    /var/www/catalog/catalog/`
+    * `sudo rm -r devpost` to remove clone directory as it is useless now.
 
-sudo git clone https://github.com/jaskanwal96/item-catalog
-make sure you get hidden files iin move shopt -s dotglob. Move files from clone directory to catalog mv /var/www/catalog/item-catalog/* /var/www/catalog/catalog/
-remove clone directory sudo rm -r devpost
-make .git inaccessible
+* redirecting .git :
+    * `cd /var/www/catalog/`
+    * `sudo nano .htaccess`. paste `RedirectMatch 404 /\.git` in file open and save file.
 
-from cd /var/www/catalog/ create .htaccess file sudo nano .htaccess
-paste in RedirectMatch 404 /\.git
-save file(nano: ctrl+x, Y, Enter)
-install dependencies:
+* install modules for project:
+    * `source venv/bin/activate`
+    * `sudo -H pip install httplib2`
+    * `sudo -H pip install requests`
+    * `sudo -H pip install --upgrade oauth2client`
+    * `sudo -H pip install sqlalchemy`
+    * `sudo -H pip install Flask-SQLAlchemy`
+    * Id your project uses any other modules, install them.
 
-source venv/bin/activate
-pip install httplib2
-pip install requests
-sudo pip install --upgrade oauth2client
-sudo pip install sqlalchemy
-pip install Flask-SQLAlchemy
-sudo pip install python-psycopg2
-If you used any other packages in your project be sure to install those as well.
-Install and configure PostgreSQL:
 
-Install postgressudo apt-get install postgresql
-install additional modelssudo apt-get install postgresql-contrib
-by default no remote connections are not allowed
-config database_setup.py sudo nano database_setup.py
-python engine = create_engine('postgresql://catalog:db-password@localhost/catalog')
-repeat for project.py
-copy your main project.py file into the init.py file mv project.py __init__.py
-Add catalog user sudo adduser catalog
-login as postgres super usersudo su - postgres
-enter postgrespsql
-Create user catalogCREATE USER catalog WITH PASSWORD 'db-password';
-Change role of user catalog to creatDBALTER USER catalog CREATEDB;
-List all users and roles to verify\du
-Create new DB "catalog" with own of catalogCREATE DATABASE catalog WITH OWNER catalog;
-Connect to database\c catalog
-Revoke all rights REVOKE ALL ON SCHEMA public FROM public;
-Give accessto only catalog roleGRANT ALL ON SCHEMA public TO catalog;
-Quit postgres\q
-logout from postgres super userexit
-Setup your database schema python database_setup.py
-fix OAuth to work with hosted Application
+* Installation and configuration of PostgreSQL :
+     * Type `sudo apt-get install postgresql` to install postgresql.
+    * Type in `sudo apt-get install postgresql-contrib`.
+    * `sudo nano database_setup.py` to open db file.
+    * `python engine = create_engine('postgresql://catalog:db-password@localhost/catalog')` to change sqlite command.
+    * Make same changes in finalproject.py file.
+    * `mv project.py __init__.py` copies finalproject.py file into __init__.py file.
+    * `sudo adduser catalog` adds catalog user.
+    * login as postgres super user`sudo su - postgres` and `psql` to enter postgres.
+    * `CREATE USER catalog WITH PASSWORD 'db-password';`
+    * ` ALTER USER catalog CREATEDB;`
+    * `\du`
+    * `CREATE DATABASE catalog WITH OWNER catalog;` create DB with catalog as owner.
+    * `\c catalog` connect DB.
+    * `REVOKE ALL ON SCHEMA public FROM public;` so that only catalog can use, view and modify it.
+    * `GRANT ALL ON SCHEMA public TO catalog;`
+    * `\q` to exit psql.
+    * `exit` to exit postgresql.
+    * `python database_setup.py` to set up project DB.
 
-Google wont allow the IP address to make redirects so we need to set up the host name address to be usable.
-go to http://www.hcidata.info/host2ip.cgi to get your host name by entering your public IP address Udacity gave you.
-open apache configbfile sudo nano /etc/apache2/sites-available/catalog.conf
-below the ServerAdmin paste ServerAlias YOURHOSTNAME
-make sure the virtual host is enabled sudo a2ensite catalog
-restart apache server sudo service apache2 restart
-in your google developer console add your host name and IP address to Authorized Javascript origins. And add YOURHOSTNAME/ouath2callback to the Authorized redirect URIs.
+
+
+* login configuration
+    * google cannot have an IP as origin so we create a hostname.
+    * click [http://www.hcidata.info/host2ip.cgi](http://www.hcidata.info/host2ip.cgi) and enter your public IP to get your host name.
+    * `sudo nano /etc/apache2/sites-available/catalog.conf` and add `ServerAlias YOURHOSTNAME` under `ServerAdmin`.
+    * enable virtual host`sudo a2ensite catalog`
+    * `sudo service apache2 restart`
+    * Open google developer console and add your host name and IP address to Authorized Javascript origins.
+    * Add *YOURHOSTNAME*/login to the Authorized redirect URIs.

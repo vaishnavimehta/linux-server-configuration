@@ -5,6 +5,7 @@
 ### In this project we had to deploy item catalog project on linux server.
 ### Project Details:
 * public Ip: `13.126.131.204`
+* hostname: `http://ec2-13-126-131-204.ap-south-1.compute.amazonaws.com/`
 * SSH PORT: `2200`
 * Full project URL:[link](http://ec2-13-126-131-204.ap-south-1.compute.amazonaws.com/)
 

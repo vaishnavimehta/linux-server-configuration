@@ -217,3 +217,5 @@
     * `sudo service apache2 restart`
     * Open google developer console and add your host name and IP address to Authorized Javascript origins.
     * Add *YOURHOSTNAME*/login to the Authorized redirect URIs.
+
+### Well, it's done now open yor IP or hostname in browser to check.

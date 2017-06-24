@@ -1,13 +1,13 @@
 # Linux-Server
 - Project 5- FSND
 
-### Project link: [link](http://ec2-13-126-131-204.ap-south-1.compute.amazonaws.com/)
+### Project link: [link](http://ec2-13-126-159-230.ap-south-1.compute.amazonaws.com/)
 ### In this project we had to deploy item catalog project on linux server.
 ### Project Details:
-* public Ip: `13.126.131.204`
-* hostname: `http://ec2-13-126-131-204.ap-south-1.compute.amazonaws.com/`
+* public Ip: `13.126.159.230`
+* hostname: `http://ec2-13-126-159-230.ap-south-1.compute.amazonaws.com/`
 * SSH PORT: `2200`
-* Full project URL:[link](http://ec2-13-126-131-204.ap-south-1.compute.amazonaws.com/)
+* Full project URL:[link](http://ec2-13-126-159-230.ap-south-1.compute.amazonaws.com/)
 
 
 
@@ -22,9 +22,9 @@
     
 * Amazon Lightsail terminal :
     * Copy your public IP address written on bottom left of terminal.
-    * Copy default key to /.ssh folder whith help of nano text editor by typing `ctrl+o`, enter and `ctrl+x`, let's say we named it 'key'.
-    * give command `chmod 600 ~/.ssh/key`
-    * Type `ssh -i ~/.ssh/key ubuntu@*YOUR_PUBLIC_IP_ADDRESS_HERE*` to create and authenticate the instance.
+    * Copy default key to /.ssh folder whith help of nano text editor by typing `ctrl+o`, enter and `ctrl+x`, let's say we named it 'key.pem'.
+    * give command `chmod 600 ~/.ssh/key.pem`
+    * Type `ssh -i ~/.ssh/key.pem ubuntu@*YOUR_PUBLIC_IP_ADDRESS_HERE*` to create and authenticate the instance.
 
 * Creating user - 'grader' :
     * `sudo adduser grader`
@@ -57,14 +57,14 @@
     * open machine's networking tab on lightsail and add custom TCP application with 2200 port.
     
 * Saving SSH key to grader account :
-    * Type `ssh -v grader@*Public-IP-Address* -p 2200` to log in with grader.
+    * Type `ssh -v grader@13.126.159.230 -p 2200` to log in with grader.
     * Type `mkdir .ssh` to make a directory named .ssh
     * Create file by giving command `touch .ssh/authorized_keys` to store generated key.
     * Read contents of key by command `cat /home/ubuntu/.ssh/item-catalog` or your path and copy the key.
     * Paste the key in the file you just created in grader `nano .ssh/authorized_keys` and save file.
     * Type in `chmod 700 .ssh`, `chmod 644 .ssh/authorized_keys` to give permissions.
     * type `nano /etc/ssh/sshd_config` and change `PasswordAuthentication` from `yes` to `no`. Save file.  
-    * login with key pair: `ssh grader@Public-IP-Address* -p 2200 -i /home/ubuntu/.ssh/item-catalog`
+    * login with key pair: `ssh grader@13.126.159.230 -p 2200 -i /home/ubuntu/.ssh/item-catalog`
 
 
 * Configuring the UFW :
@@ -131,8 +131,8 @@
 
     ```
     <VirtualHost *:80>
-      ServerName 34.201.114.178
-      ServerAdmin admin@34.201.114.178
+      ServerName 13.126.159.230
+      ServerAdmin admin@13.126.159.230
       WSGIScriptAlias / /var/www/catalog/catalog.wsgi
       <Directory /var/www/catalog/catalog/>
           Order allow,deny

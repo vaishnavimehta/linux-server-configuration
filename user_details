@@ -1,2 +1,3 @@
 name: grader
-pass: grader
+password: root
+key pass phrase: hello
